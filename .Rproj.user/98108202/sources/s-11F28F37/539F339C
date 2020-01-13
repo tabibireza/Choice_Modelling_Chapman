@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1577690956579.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3164346130",
+    "id" : "539F339C",
+    "lastKnownWriteTime" : 1578927892,
+    "last_content_update" : 1578927892402,
+    "path" : "E:/towork/study/r-studio/projects/Choice_Modelling_Chapman/Conjoint_analysis.R",
+    "project_path" : "Conjoint_analysis.R",
+    "properties" : {
+        "cursorPosition" : "110,1",
+        "scrollLine" : "88",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
