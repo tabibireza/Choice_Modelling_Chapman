@@ -47,7 +47,6 @@ cbind(share, data)
 }
 
 
-
 attrib <- list(seat = c("6", "7", "8"),
                cargo = c("2ft", "3ft"),
                eng = c("gas", "hyb", "elec"),
@@ -72,11 +71,12 @@ base.share <- predict.mnl(model, data)[1,1]
 share <- NULL
 for (a in seq_along(attrib)) {
  for (i in attrib[[a]]) {
-   data[1,] <- base.data
+      data[1,] <- base.data
    data[1,a] <- i
    share <- c(share, predict.mnl(model, data)[1,1])
    }
   }
+
 data.frame(level=unlist(attrib), share=share, increase=share-base.share)
 }# competitor.data: data frame containing design of competitive set
 
