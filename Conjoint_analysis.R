@@ -88,6 +88,7 @@ tradeoff <- sensitivity.mnl(m1, attrib, base.data, competitor.data)
 barplot(tradeoff$increase, horiz=FALSE, names.arg=tradeoff$level,
          ylab="Change in Share for Baseline Product")
 
+
 # Planning the Sample Size for a Conjoint Study
 library(mlogit)
 small.cbc <- mlogit.data(data=cbc.df[1:(25*15*3),],choice="choice", shape="long",
@@ -97,21 +98,41 @@ small.cbc <- mlogit.data(data=cbc.df[1:(25*15*3),],choice="choice", shape="long"
 m4 <- mlogit(choice ~ 0 + seat + cargo + eng + price, data = small.cbc)
 cbind(predict.mnl(m4,new.data), predict.mnl(m1,new.data))
 
+
 # Adding Consumer Heterogeneity to Choice Models(383)
 
-m1.rpar <- rep("n", length=length(m1$coef))
- names(m1.rpar) <- names(m1$coef)
- m1.rpar
+m1.rpar <- rep("n", length=length(m1$coef)) 
+names(m1.rpar) <- names(m1$coef)
+m1.rpar
  
- m1.hier <- mlogit(choice ~ 0 + seat + eng + cargo + price,
+m1.hier <- mlogit(choice ~ 0 + seat + eng + cargo + price,
                    data = cbc.mlogit,
                    panel=TRUE, rpar = m1.rpar, correlation = FALSE)
 
 
-   m2.hier <- update(m1.rpar, correlation = TRUE)
- 
+m2.hier <- update(m1.hier, correlation = TRUE)
+cov2cor(cov.mlogit(m2.hier)) 
 
 
+# Share Prediction for Heterogeneous Choice Models
 
+predict.hier.mnl <- function(model, data, nresp=1000) {
+   # Function for predicting shares of a hierarchical multinomial logit model
+   # model: mlogit object returned by mlogit()
+   # data: a data frame containing the set of designs for which you want to
+   # predict shares. Same format at the data used to estimate model.
+   # Note that this code assumes all model parameters are random
+   data.model <- model.matrix(update(model$formula, 0 ~ .), data = data)[,-1]
+   coef.Sigma <- cov.mlogit(model)
+   coef.mu <- m2.hier$coef[1:dim(coef.Sigma)[1]]
+   draws <- MASS::mvrnorm(n=nresp, coef.mu, coef.Sigma)
+   shares <- matrix(NA, nrow=nresp, ncol=nrow(data))
+   for (i in 1:nresp) {
+     utility <- data.model%*%draws[i,]
+     share = exp(utility)/sum(exp(utility))
+     shares[i,] <- share
+   }
+  cbind(colMeans(shares), data)
+}
 
-
+predict.hier.mnl(m2.hier, data=new.data)
