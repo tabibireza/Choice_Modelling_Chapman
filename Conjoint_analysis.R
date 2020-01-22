@@ -108,9 +108,10 @@ m1.rpar
 m1.hier <- mlogit(choice ~ 0 + seat + eng + cargo + price,
                    data = cbc.mlogit,
                    panel=TRUE, rpar = m1.rpar, correlation = FALSE)
-
+summary(m1.hier)
 
 m2.hier <- update(m1.hier, correlation = TRUE)
+summary(m2.hier)
 cov2cor(cov.mlogit(m2.hier)) 
 
 
@@ -122,9 +123,9 @@ predict.hier.mnl <- function(model, data, nresp=1000) {
    # data: a data frame containing the set of designs for which you want to
    # predict shares. Same format at the data used to estimate model.
    # Note that this code assumes all model parameters are random
-   data.model <- model.matrix(update(model$formula, 0 ~ .), data = data)[,-1]
+   data.model <- model.matrix(updacte(model$formula, 0 ~ .), data = data)[,-1]
    coef.Sigma <- cov.mlogit(model)
-   coef.mu <- m2.hier$coef[1:dim(coef.Sigma)[1]]
+   coef.mu <- model$coef[1:dim(coef.Sigma)[1]]
    draws <- MASS::mvrnorm(n=nresp, coef.mu, coef.Sigma)
    shares <- matrix(NA, nrow=nresp, ncol=nrow(data))
    for (i in 1:nresp) {
